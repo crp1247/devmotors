@@ -1,63 +1,55 @@
-import styles from './styles.module.scss'
-import { getItemBySlug } from '../../../ultis/actions/get-data'
+import styles from './styles.module.scss';
+import { getItemBySlug } from '../../../ultis/actions/get-data';
 import { PostProps } from '@/ultis/post.type';
 import { Hero } from '@/app/components/hero';
 import { Phone } from 'lucide-react';
 import { Container } from '@/app/components/container';
-import  Image  from 'next/image';
-import { Metadata } from "next";
+import Image from 'next/image';
+import { Metadata } from 'next';
 
-export async function generateMetadata({ params: { slug } }: {
+// Função generateMetadata ajustada para corresponder ao tipo esperado
+export async function generateMetadata({ params }: {
   params: { slug: string }
-}):Promise<Metadata> {
-  
-  try{
-    const{objects}: PostProps = await getItemBySlug(slug)
-    .catch(() => {
-      return{
-        title:"DevMotors - Sua oficina especializada!",
-        description: "Oficina de carros em São Paulo",
-      }
-    })
+}): Promise<Metadata> {
+  try {
+    const { objects }: PostProps = await getItemBySlug(params.slug); // Garantir que params.slug está sendo usado corretamente
 
-    return{
-      title:`DevMotors -${objects[0].title}`,
-      description:`${objects[0].metadata.description.text}`,
-      keywords:["devmotos", "troca de oleo", "devmotors troca de oleo"],
-      openGraph:{
-        title: `DevMotors -${objects[0].title}`,
-        images: [objects[0].metadata.banner.url]
+    return {
+      title: `DevMotors - ${objects[0].title}`, // Espaço adicionado após 'DevMotors -'
+      description: `${objects[0].metadata.description.text}`,
+      keywords: ["devmotos", "troca de oleo", "devmotors troca de oleo"],
+      openGraph: {
+        title: `DevMotors - ${objects[0].title}`, // Espaço adicionado após 'DevMotors -'
+        images: [objects[0].metadata.banner.url],
       },
-      robots:{
-        index:true,
-        follow:true,
+      robots: {
+        index: true,
+        follow: true,
         nocache: true,
-        googleBot:{
-          index:true,
+        googleBot: {
+          index: true,
           follow: true,
-          noimageindex:true,
-        }
-      }
-    }
-
-  }catch(err){
-    return{
-      title:"DevMotors - Sua oficina especializada!",
+          noimageindex: true,
+        },
+      },
+    };
+  } catch (err) {
+    return {
+      title: "DevMotors - Sua oficina especializada!",
       description: "Oficina de carros em São Paulo",
-    }
+    };
   }
 }
 
-
-export default async function Page({ params: { slug } }: {
+// Exportação padrão ajustada para corresponder ao tipo esperado
+export default async function Page({ params }: {
   params: { slug: string }
-}){
-  const { objects }: PostProps = await getItemBySlug(slug);
-  //console.log(JSON.stringify(objects, null, 2));
+}) {
+  const { objects }: PostProps = await getItemBySlug(params.slug); // Garantir que params.slug está sendo usado corretamente
 
-  return(
+  return (
     <>
-       <Hero
+      <Hero
         heading={objects[0].title}
         buttonTitle={objects[0].metadata.button.title}
         buttonUrl={objects[0].metadata.button.url}
@@ -75,29 +67,27 @@ export default async function Page({ params: { slug } }: {
             </p>
             {objects[0].metadata.description.button_active && (
               <a
-              href={objects[0].metadata.description.button_url as string} target='_blank'
-               className={styles.link}>
+                href={objects[0].metadata.description.button_url as string}
+                target='_blank'
+                className={styles.link}
+              >
                 {objects[0].metadata.description.button_title}
               </a>
             )}
-            </article>
-            <div className={styles.bannerAbout}>
-                <Image
-                className={styles.imageAbout}
-                alt={objects[0].title}
-                quality={100}
-                fill={true}
-                priority={true}
-                src={objects[0].metadata.description.banner.url}
-                sizes="(max-width: 480px) 100vw, (max-width:1074px) 75vw, 60vw"
-
-                />
-            </div>
-          
-
+          </article>
+          <div className={styles.bannerAbout}>
+            <Image
+              className={styles.imageAbout}
+              alt={objects[0].title}
+              quality={100}
+              fill={true}
+              priority={true}
+              src={objects[0].metadata.description.banner.url}
+              sizes="(max-width: 480px) 100vw, (max-width:1074px) 75vw, 60vw"
+            />
+          </div>
         </section>
       </Container>
     </>
-  )
+  );
 }
-
