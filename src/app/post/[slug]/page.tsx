@@ -7,7 +7,7 @@ import { Container } from '@/app/components/container';
 import  Image  from 'next/image';
 import { Metadata } from "next";
 
-export async function genetateMetadata({ params: { slug } }: {
+export async function generateMetadata({ params: { slug } }: {
   params: { slug: string }
 }):Promise<Metadata> {
   
